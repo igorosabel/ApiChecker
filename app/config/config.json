@@ -1,0 +1,13 @@
+{
+	"name": "Checker",
+	"db": {
+		"host": "localhost",
+		"user": "checker",
+		"pass": "894urzV5@",
+		"name": "checker"
+	},
+	"base_url": "https://apichecker.osumi.es/",
+	"extra": {
+		"secret": "e6a4aca73b123a6f75941b176e53e4ce"
+	}
+}
