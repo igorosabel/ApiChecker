@@ -4,45 +4,37 @@ namespace OsumiFramework\App\Module\Action;
 
 use OsumiFramework\OFW\Routing\OModuleAction;
 use OsumiFramework\OFW\Routing\OAction;
-use OsumiFramework\App\DTO\RegisterDTO;
+use OsumiFramework\OFW\Web\ORequest;
 use OsumiFramework\App\Model\User;
 use OsumiFramework\App\Component\Model\UserComponent;
 use OsumiFramework\App\Component\Model\CheckinTypeListComponent;
 use OsumiFramework\OFW\Plugins\OToken;
 
 #[OModuleAction(
-	url: '/register'
+	url: '/login',
+	services:	['web']
 )]
-class registerAction extends OAction {
+class loginAction extends OAction {
 	/**
-	 * Función para registrar un nuevo usuario
+	 * Método para iniciar sesión
 	 *
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(RegisterDTO $data):void {
+	public function run(ORequest $req):void {
 		$status = 'ok';
+		$name   = $req->getParamString('name');
+		$pass   = $req->getParamString('pass');
 		$user_component = new UserComponent(['user' => null]);
 		$checkin_type_list_component = new CheckinTypeListComponent(['list' => []]);
 
-		if (!$data->isValid()) {
+		if (is_null($name) || is_null($pass)) {
 			$status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($status=='ok') {
 			$user = new User();
-			if ($user->find(['email' => $data->getEmail()])) {
-				$status = 'error-email';
-			}
-			if ($status == 'ok' && $user->find(['name' => $data->getName()])) {
-				$status = 'error-name';
-			}
-			if ($status == 'ok') {
-				$user->set('name', $data->getName());
-				$user->set('email', $data->getEmail());
-				$user->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
-				$user->save();
-
+			if ($user->login($name, $pass)) {
 				$tk = new OToken($this->getConfig()->getExtra('secret'));
 				$tk->addParam('id', $user->get('id'));
 				$tk->addParam('name', $user->get('name'));
@@ -50,6 +42,10 @@ class registerAction extends OAction {
 				$user->setToken($tk->getToken());
 
 				$user_component->setValue('user', $user);
+				$checkin_type_list_component->setValue('list', $this->web_service->getUserCheckinTypes($user->get('id')));
+			}
+			else {
+				$status = 'error';
 			}
 		}
 

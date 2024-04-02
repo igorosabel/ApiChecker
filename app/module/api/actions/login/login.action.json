@@ -1,0 +1,7 @@
+{
+  "status": "{{status}}",
+  "user": {{user}},
+  "checkinTypeList": [
+    {{checkin_type_list}}
+  ]
+}

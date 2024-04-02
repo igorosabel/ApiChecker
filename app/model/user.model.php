@@ -53,14 +53,14 @@ class User extends OModel {
 	/**
 	 * Función para comprobar un inicio de sesión. Primero busca el usuario por su nombre de usuario y luego comprueba su contraseña.
 	 *
-	 * @param string $user Nombre de usuario
+	 * @param string $name Nombre de usuario
 	 *
 	 * @param string $pass Contraseña a comprobar del usuario
 	 *
 	 * @return bool Devuelve si el inicio de sesión es correcto
 	 */
-	public function login(string $email, string $pass): bool {
-		if ($this->find(['email' => $email])) {
+	public function login(string $name, string $pass): bool {
+		if ($this->find(['name' => $name])) {
 			return $this->checkPass($pass);
 		}
 		else {
