@@ -5,6 +5,7 @@ namespace OsumiFramework\App\Model;
 use OsumiFramework\OFW\DB\OModel;
 use OsumiFramework\OFW\DB\OModelGroup;
 use OsumiFramework\OFW\DB\OModelField;
+use OsumiFramework\OFW\DB\ODB;
 
 class CheckinType extends OModel {
 	function __construct() {
@@ -59,7 +60,8 @@ class CheckinType extends OModel {
 				name: 'last_used',
 				type: OMODEL_DATE,
 				comment: 'Última vez que se ha usado el tipo de checkin',
-				nullable: false
+				nullable: true,
+				default: null
 			),
 			new OModelField(
 				name: 'created_at',
@@ -74,5 +76,55 @@ class CheckinType extends OModel {
 		);
 
 		parent::load($model);
+	}
+
+	/**
+	 * Listado de checkins de un tipo
+	 */
+	private array | null $checkins = null;
+
+	/**
+	 * Guarda el listado de checkins que tiene un tipo
+	 *
+	 * @param array $list Listado de checkins
+	 *
+	 * @return void
+	 */
+	public function setCheckins(array $list): void {
+		$this->checkins = $list;
+	}
+
+	/**
+	 * Obtiene el listado de checkins que tiene un tipo
+	 *
+	 * @return array Listado de checkins
+	 */
+	public function getCheckins(): array {
+		if (is_null($this->checkins)) {
+			$this->loadCheckins();
+		}
+		return $this->checkins;
+	}
+
+	/**
+	 * Carga el listado de checkins que tiene un tipo
+	 *
+	 * @return void
+	 */
+	public function loadCheckins(): void {
+		$db = new ODB();
+		$sql = "SELECT * FROM `checkin` WHERE `id_type` = ? ORDER BY `created_at` DESC";
+
+		$list = [];
+		$db->query($sql, [$this->get('id')]);
+
+		while ($res=$db->next()) {
+			$c = new Checkin();
+			$c->update($res);
+
+			array_push($list, $c);
+		}
+
+		$this->setCheckins($list);
 	}
 }

@@ -5,6 +5,7 @@ namespace OsumiFramework\App\Model;
 use OsumiFramework\OFW\DB\OModel;
 use OsumiFramework\OFW\DB\OModelGroup;
 use OsumiFramework\OFW\DB\OModelField;
+use OsumiFramework\App\Model\Photo;
 
 class Checkin extends OModel {
 	function __construct() {
@@ -73,5 +74,20 @@ class Checkin extends OModel {
 		);
 
 		parent::load($model);
+	}
+
+	/**
+	 * Método para borrar un checkin y su foto asociada, si tiene
+	 *
+	 * @return void
+	 */
+	public function deleteFull(): void {
+		if (!is_null($this->get('id_photo'))) {
+			$p = new Photo();
+			if ($p->find(['id' => $this->get('id_photo')])) {
+				$p->deleteFull();
+			}
+		}
+		$this->delete();
 	}
 }

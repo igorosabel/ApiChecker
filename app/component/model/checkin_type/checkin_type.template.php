@@ -8,6 +8,6 @@ null
 	"hasMessage": <?php echo $values['checkintype']->get('has_message') ? 'true' : 'false' ?>,
 	"hasValue": <?php echo $values['checkintype']->get('has_value') ? 'true' : 'false' ?>,
 	"num": <?php echo $values['checkintype']->get('num') ?>,
-	"lastUsed": "<?php echo $values['checkintype']->get('last_used', 'd/m/Y H:i:s') ?>"
+	"lastUsed": <?php echo is_null($values['checkintype']->get('last_used')) ? 'null' : $values['checkintype']->get('last_used', 'd/m/Y H:i') ?>
 }
 <?php endif ?>

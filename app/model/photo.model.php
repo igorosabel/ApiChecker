@@ -35,4 +35,19 @@ class Photo extends OModel {
 
 		parent::load($model);
 	}
+
+	/**
+	 * Método para borrar una foto y su archivo asociado
+	 *
+	 * @return void
+	 */
+	public function deleteFull(): void {
+		global $core;
+		$ruta = $core->config->getExtra('photos').$this->get('id').'.webp';
+		if (file_exists($ruta)){
+			unlink($ruta);
+		}
+
+		$this->delete();
+	}
 }
