@@ -6,7 +6,7 @@ use OsumiFramework\OFW\Core\ODTO;
 use OsumiFramework\OFW\Web\ORequest;
 
 class CheckintypeDTO implements ODTO{
-	private ?int $ide          = null;
+	private ?int $id           = null;
 	private ?string $name      = null;
 	private ?string $icon      = null;
   private ?bool $has_message = null;

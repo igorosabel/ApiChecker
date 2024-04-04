@@ -5,7 +5,7 @@ namespace OsumiFramework\App\Module;
 use OsumiFramework\OFW\Routing\OModule;
 
 #[OModule(
-	actions: ['register', 'login', 'getCheckins', 'getCheckinTypes', 'saveCheckinType', 'deleteCheckinType', 'updateProfile'],
+	actions: ['register', 'login', 'getCheckins', 'getCheckinTypes', 'saveCheckinType', 'deleteCheckinType', 'updateProfile', 'saveCheckin'],
 	type: 'json',
 	prefix: '/api'
 )]
