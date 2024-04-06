@@ -10,6 +10,6 @@
 	"extra": {
 		"secret": "e6a4aca73b123a6f75941b176e53e4ce",
 		"photos": "/var/www/vhosts/osumi.es/apichecker.osumi.es/web/photos",
-		"num_per_page": 2
+		"num_per_page": 10
 	}
 }
