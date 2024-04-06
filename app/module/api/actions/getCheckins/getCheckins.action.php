@@ -22,6 +22,8 @@ class getCheckinsAction extends OAction {
 	public function run(CheckinsDTO $data):void {
 		$status = 'ok';
 		$checkin_list_component = new CheckinListComponent(['list' => []]);
+		$pages = 'null';
+		$total = 'null';
 
 		if (!$data->isValid()) {
 			$status = 'error';
@@ -29,9 +31,14 @@ class getCheckinsAction extends OAction {
 
 		if ($status == 'ok') {
 			$checkin_list_component->setValue('list', $this->web_service->getUserCheckins($data));
+			$stats = $this->web_service->getUserCheckinsPages($data);
+			$pages = $stats['pages'];
+			$total = $stats['total'];
 		}
 
 		$this->getTemplate()->add('status', $status);
 		$this->getTemplate()->add('list',   $checkin_list_component);
+		$this->getTemplate()->add('pages',  $pages);
+		$this->getTemplate()->add('total',  $total);
 	}
 }

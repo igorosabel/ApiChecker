@@ -14,6 +14,7 @@ class CheckinDTO implements ODTO{
   private ?float $location_lon = null;
   private ?int $id_photo       = null;
   private ?string $photo       = null;
+	private ?int $id_user        = null;
 
 	private function setId(?int $id) {
 		$this->id = $id;
@@ -71,7 +72,10 @@ class CheckinDTO implements ODTO{
 	}
 
 	public function isValid(): bool {
-		return (!is_null($this->getIdType()));
+		return (
+			!is_null($this->getIdType()) &&
+			!is_null($this->getIdUser())
+		);
 	}
 
 	public function load(ORequest $req): void {

@@ -31,12 +31,6 @@ class saveCheckinAction extends OAction {
 		if ($status == 'ok') {
 			$c = new Checkin();
 
-			/*
-			no llega photo, no llega photo id y ya tenia (id_photo !== null) => borrar anterior
-			llega photo (photo) y no tenia (id_photo == null) => cargar nueva
-			llega photo (photo) y ya tenia (id_photo != null) => borrar anterior y cargar nueva
-			*/
-
 			$delete_previous_photo = null;
 			$load_new_photo = false;
 
@@ -89,6 +83,11 @@ class saveCheckinAction extends OAction {
 			$c->set('id_photo',     $data->getIdPhoto());
 
 			$c->save();
+
+			$ct = $c->getCheckinType();
+			$ct->set('num', $ct->get('num') + 1);
+			$ct->set('last_used', $c->get('created_at', 'Y-m-d H:i:s'));
+			$ct->save();
 		}
 
 		$this->getTemplate()->add('status', $status);

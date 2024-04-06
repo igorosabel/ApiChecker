@@ -53,11 +53,21 @@ class webService extends OService {
 			$sql .= " AND `id_type` = ?";
 			array_push($params, $data->getIdType());
 		}
+		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
+			$sql .= " AND `created_at` > ?";
+			array_push($params, $data->getStart());
+		}
+		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
+			$sql .= " AND `created_at` < ?";
+			array_push($params, $data->getEnd());
+		}
 		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
 			$sql .= " AND `created_at` BETWEEN ? AND ?";
 			array_push($params, $data->getStart(), $data->getEnd());
 		}
 		$sql .= " ORDER BY `created_at` DESC";
+		$lim = ($data->getPage() -1) * $this->getConfig()->getExtra('num_per_page');
+		$sql .= " LIMIT ".$lim.",".$this->getConfig()->getExtra('num_per_page');
 
 		$ret = [];
 		$db->query($sql, $params);
@@ -70,6 +80,43 @@ class webService extends OService {
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * Método para obtener el número de páginas del listado de checkins de un usuario
+	 *
+	 * @param CheckinsDTO $data Filtros para obtener los checkin
+	 *
+	 * @return array Devuelve número de resultados y número de páginas
+	 */
+	public function getUserCheckinsPages(CheckinsDTO $data): array {
+		$db = new ODB();
+		$params = [$data->getIdUser()];
+		$sql = "SELECT COUNT(*) AS `num` FROM `checkin` WHERE `id_user` = ?";
+		if (!is_null($data->getIdType())) {
+			$sql .= " AND `id_type` = ?";
+			array_push($params, $data->getIdType());
+		}
+		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
+			$sql .= " AND `created_at` > ?";
+			array_push($params, $data->getStart());
+		}
+		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
+			$sql .= " AND `created_at` < ?";
+			array_push($params, $data->getEnd());
+		}
+		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
+			$sql .= " AND `created_at` BETWEEN ? AND ?";
+			array_push($params, $data->getStart(), $data->getEnd());
+		}
+
+		$db->query($sql, $params);
+		$res = $db->next();
+
+		return [
+			'pages'  => ceil( $res['num'] / $this->getConfig()->getExtra('num_per_page') ),
+			'total' => $res['num']
+		];
 	}
 
 	/**

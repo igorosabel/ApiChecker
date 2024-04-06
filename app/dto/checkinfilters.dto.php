@@ -5,14 +5,13 @@ namespace OsumiFramework\App\DTO;
 use OsumiFramework\OFW\Core\ODTO;
 use OsumiFramework\OFW\Web\ORequest;
 
-class CheckinsDTO implements ODTO{
-	private ?int $id_type  = null;
+class CheckinfiltersDTO implements ODTO{
+  private ?int $id_type  = null;
 	private ?string $start = null;
-	private ?string $end   = null;
-	private ?int $page     = null;
+  private ?string $end   = null;
   private ?int $id_user  = null;
 
-	private function setIdType(?int $id_type) {
+  private function setIdType(?int $id_type) {
 		$this->id_type = $id_type;
 	}
 	public function getIdType(): ?int {
@@ -24,17 +23,11 @@ class CheckinsDTO implements ODTO{
 	public function getStart(): ?string {
 		return $this->start;
 	}
-	private function setEnd(?string $end) {
+  private function setEnd(?string $end) {
 		$this->end = $end;
 	}
 	public function getEnd(): ?string {
 		return $this->end;
-	}
-	private function setPage(?int $page) {
-		$this->page = $page;
-	}
-	public function getPage(): ?int {
-		return $this->page;
 	}
   public function getIdUser(): ?int {
 		return $this->id_user;
@@ -44,19 +37,15 @@ class CheckinsDTO implements ODTO{
 	}
 
 	public function isValid(): bool {
-		return (
-			!is_null($this->getPage()) &&
-			!is_null($this->getIdUser())
-		);
+		return (!is_null($this->getIdUser()));
 	}
 
 	public function load(ORequest $req): void {
     $filter = $req->getFilter('login');
 
-		$this->setIdType($req->getParamInt('idType'));
+    $this->setIdType($req->getParamInt('idType'));
 		$this->setStart($req->getParamString('start'));
-		$this->setEnd($req->getParamString('end'));
-		$this->setPage($req->getParamInt('page'));
+    $this->setEnd($req->getParamString('end'));
     $this->setIdUser(array_key_exists('id', $filter) ? $filter['id'] : null);
 	}
 }

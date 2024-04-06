@@ -6,6 +6,7 @@ use OsumiFramework\OFW\DB\OModel;
 use OsumiFramework\OFW\DB\OModelGroup;
 use OsumiFramework\OFW\DB\OModelField;
 use OsumiFramework\App\Model\Photo;
+use OsumiFramework\App\Model\CheckinType;
 
 class Checkin extends OModel {
 	function __construct() {
@@ -74,6 +75,42 @@ class Checkin extends OModel {
 		);
 
 		parent::load($model);
+	}
+
+	private CheckinType | null $ct = null;
+
+	/**
+	 * Guarda el tipo de un checkin
+	 *
+	 * @param CheckinType $ct Tipo de checkin
+	 *
+	 * @return void
+	 */
+	public function setCheckinType(CheckinType $ct): void {
+		$this->ct = $ct;
+	}
+
+	/**
+	 * Obtiene el tipo de un checkin
+	 *
+	 * @return CheckinType Tipo de un checkin
+	 */
+	public function getCheckinType(): CheckinType {
+		if (is_null($this->ct)) {
+			$this->loadCheckinType();
+		}
+		return $this->ct;
+	}
+
+	/**
+	 * Carga el tipo de un checkin
+	 *
+	 * @return void
+	 */
+	public function loadCheckinType(): void {
+		$ct = new CheckinType();
+		$ct->find(['id' => $this->get('id_type')]);
+		$this->setCheckinType($ct);
 	}
 
 	/**

@@ -6,6 +6,7 @@ use OsumiFramework\OFW\DB\OModel;
 use OsumiFramework\OFW\DB\OModelGroup;
 use OsumiFramework\OFW\DB\OModelField;
 use OsumiFramework\OFW\DB\ODB;
+use OsumiFramework\App\Model\Checkin;
 
 class CheckinType extends OModel {
 	function __construct() {
