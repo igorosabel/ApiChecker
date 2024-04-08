@@ -9,6 +9,6 @@ null
 	"locationLat": <?php echo is_null($values['checkin']->get('location_lat')) ? 'null' : $values['checkin']->get('location_lat') ?>,
 	"locationLon": <?php echo is_null($values['checkin']->get('location_lon')) ? 'null' : $values['checkin']->get('location_lon') ?>,
 	"idPhoto": <?php echo is_null($values['checkin']->get('id_photo')) ? 'null' : $values['checkin']->get('id_photo') ?>,
-	"createdAt": "<?php echo $values['checkin']->get('created_at', 'd/m/Y H:i:s') ?>"
+	"createdAt": "<?php echo $values['checkin']->get('created_at', 'd/m/Y H:i') ?>"
 }
 <?php endif ?>

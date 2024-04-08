@@ -76,7 +76,7 @@ class saveCheckinAction extends OAction {
 				$this->web_service->savePhoto($data->getPhoto(), $p->get('id'));
 			}
 
-			$c->set('message',      urldecode($data->getMessage()));
+			$c->set('message',      !is_null($data->getMessage()) ? urldecode($data->getMessage()) : null);
 			$c->set('value',        $data->getValue());
 			$c->set('location_lat', $data->getLocationLat());
 			$c->set('location_lon', $data->getLocationLon());
