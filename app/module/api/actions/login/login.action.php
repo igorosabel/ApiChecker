@@ -39,6 +39,7 @@ class loginAction extends OAction {
 				$tk->addParam('id', $user->get('id'));
 				$tk->addParam('name', $user->get('name'));
 				$tk->addParam('email', $user->get('email'));
+				$tk->setEXP(time() + (60*60*24));
 				$user->setToken($tk->getToken());
 
 				$user_component->setValue('user', $user);
