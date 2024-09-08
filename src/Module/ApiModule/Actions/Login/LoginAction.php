@@ -15,6 +15,10 @@ use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComp
 	services:	['Web']
 )]
 class LoginAction extends OAction {
+	public string $status = 'ok';
+	public ?UserComponent $user = null;
+	public ?CheckinTypeListComponent $checkin_type_list = null;
+
 	/**
 	 * Método para iniciar sesión
 	 *
@@ -22,36 +26,31 @@ class LoginAction extends OAction {
 	 * @return void
 	 */
 	public function run(ORequest $req):void {
-		$status = 'ok';
-		$name   = $req->getParamString('name');
-		$pass   = $req->getParamString('pass');
-		$user_component = new UserComponent(['User' => null]);
-		$checkin_type_list_component = new CheckinTypeListComponent(['list' => []]);
+		$name = $req->getParamString('name');
+		$pass = $req->getParamString('pass');
+		$this->user = new UserComponent(['User' => null]);
+		$this->checkin_type_list = new CheckinTypeListComponent(['list' => []]);
 
 		if (is_null($name) || is_null($pass)) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status=='ok') {
-			$user = new User();
-			if ($user->login($name, $pass)) {
+		if ($this->status=='ok') {
+			$u = new User();
+			if ($u->login($name, $pass)) {
 				$tk = new OToken($this->getConfig()->getExtra('secret'));
-				$tk->addParam('id', $user->get('id'));
-				$tk->addParam('name', $user->get('name'));
-				$tk->addParam('email', $user->get('email'));
+				$tk->addParam('id', $u->get('id'));
+				$tk->addParam('name', $u->get('name'));
+				$tk->addParam('email', $u->get('email'));
 				$tk->setEXP(time() + (60*60*24));
-				$user->setToken($tk->getToken());
+				$u->setToken($tk->getToken());
 
-				$user_component->setValue('User', $user);
-				$checkin_type_list_component->setValue('list', $this->service['Web']->getUserCheckinTypes($user->get('id')));
+				$this->user->setValue('User', $u);
+				$this->checkin_type_list->setValue('list', $this->service['Web']->getUserCheckinTypes($u->get('id')));
 			}
 			else {
-				$status = 'error';
+				$this->status = 'error';
 			}
 		}
-
-		$this->getTemplate()->add('status', $status);
-		$this->getTemplate()->add('user',   $user_component);
-		$this->getTemplate()->add('checkin_type_list', $checkin_type_list_component);
 	}
 }

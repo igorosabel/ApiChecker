@@ -14,6 +14,10 @@ use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComp
 	url: '/register'
 )]
 class RegisterAction extends OAction {
+	public string $status = 'ok';
+	public ?UserComponent $user = null;
+	public ?CheckinTypeListComponent $checkin_type_list = null;
+
 	/**
 	 * Función para registrar un nuevo usuario
 	 *
@@ -21,40 +25,35 @@ class RegisterAction extends OAction {
 	 * @return void
 	 */
 	public function run(RegisterDTO $data):void {
-		$status = 'ok';
-		$user_component = new UserComponent(['User' => null]);
-		$checkin_type_list_component = new CheckinTypeListComponent(['list' => []]);
+		$this->user = new UserComponent(['User' => null]);
+		$this->checkin_type_list = new CheckinTypeListComponent(['list' => []]);
 
 		if (!$data->isValid()) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
-			$user = new User();
-			if ($user->find(['email' => $data->getEmail()])) {
-				$status = 'error-email';
+		if ($this->status == 'ok') {
+			$u = new User();
+			if ($u->find(['email' => $data->getEmail()])) {
+				$this->status = 'error-email';
 			}
-			if ($status == 'ok' && $user->find(['name' => $data->getName()])) {
-				$status = 'error-name';
+			if ($this->status == 'ok' && $u->find(['name' => $data->getName()])) {
+				$this->status = 'error-name';
 			}
-			if ($status == 'ok') {
-				$user->set('name', $data->getName());
-				$user->set('email', $data->getEmail());
-				$user->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
-				$user->save();
+			if ($this->status == 'ok') {
+				$u->set('name', $data->getName());
+				$u->set('email', $data->getEmail());
+				$u->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
+				$u->save();
 
 				$tk = new OToken($this->getConfig()->getExtra('secret'));
-				$tk->addParam('id', $user->get('id'));
-				$tk->addParam('name', $user->get('name'));
-				$tk->addParam('email', $user->get('email'));
-				$user->setToken($tk->getToken());
+				$tk->addParam('id', $u->get('id'));
+				$tk->addParam('name', $u->get('name'));
+				$tk->addParam('email', $u->get('email'));
+				$u->setToken($tk->getToken());
 
-				$user_component->setValue('User', $user);
+				$this->user->setValue('User', $u);
 			}
 		}
-
-		$this->getTemplate()->add('status', $status);
-		$this->getTemplate()->add('user',   $user_component);
-		$this->getTemplate()->add('checkin_type_list', $checkin_type_list_component);
 	}
 }

@@ -13,6 +13,11 @@ use Osumi\OsumiFramework\App\Component\Model\CheckinList\CheckinListComponent;
 	filters: ['Login']
 )]
 class GetCheckinsAction extends OAction {
+	public string $status = 'ok';
+	public string | float $pages  = 'null';
+	public string | float $total  = 'null';
+	public ?CheckinListComponent $list = null;
+
 	/**
 	 * Método para obtener el listado de checkins de un usuario
 	 *
@@ -20,25 +25,17 @@ class GetCheckinsAction extends OAction {
 	 * @return void
 	 */
 	public function run(CheckinsDTO $data):void {
-		$status = 'ok';
-		$checkin_list_component = new CheckinListComponent(['list' => []]);
-		$pages = 'null';
-		$total = 'null';
+		$this->list = new CheckinListComponent(['list' => []]);
 
 		if (!$data->isValid()) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
-			$checkin_list_component->setValue('list', $this->service['Web']->getUserCheckins($data));
+		if ($this->status == 'ok') {
+			$this->list->setValue('list', $this->service['Web']->getUserCheckins($data));
 			$stats = $this->service['Web']->getUserCheckinsPages($data);
-			$pages = $stats['pages'];
-			$total = $stats['total'];
+			$this->pages = $stats['pages'];
+			$this->total = $stats['total'];
 		}
-
-		$this->getTemplate()->add('status', $status);
-		$this->getTemplate()->add('list',   $checkin_list_component);
-		$this->getTemplate()->add('pages',  $pages);
-		$this->getTemplate()->add('total',  $total);
 	}
 }

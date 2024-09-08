@@ -12,6 +12,8 @@ use Osumi\OsumiFramework\App\Model\Checkin;
 	filters: ['Login']
 )]
 class DeleteCheckinAction extends OAction {
+	public string $status = 'ok';
+
 	/**
 	 * Método para borrar un checkin
 	 *
@@ -19,30 +21,27 @@ class DeleteCheckinAction extends OAction {
 	 * @return void
 	 */
 	public function run(ORequest $req):void {
-		$status = 'ok';
 		$id = $req->getParamInt('id');
 		$filter = $req->getFilter('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
 
 		if (is_null($id) || is_null($id_user)) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($this->status == 'ok') {
 			$c = new Checkin();
 			if ($c->find(['id' => $id])) {
 				if ($c->get('id_user') == $id_user) {
 					$c->deleteFull();
 				}
 				else {
-					$status = 'error';
+					$this->status = 'error';
 				}
 			}
 			else {
-				$status = 'error';
+				$this->status = 'error';
 			}
 		}
-
-		$this->getTemplate()->add('status', $status);
 	}
 }

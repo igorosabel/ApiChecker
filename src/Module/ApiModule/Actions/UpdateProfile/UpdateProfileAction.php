@@ -12,6 +12,8 @@ use Osumi\OsumiFramework\App\Model\User;
 	filters: ['Login']
 )]
 class UpdateProfileAction extends OAction {
+	public string $status = 'ok';
+
 	/**
 	 * Método para actualizar el perfil de un usuario
 	 *
@@ -19,13 +21,11 @@ class UpdateProfileAction extends OAction {
 	 * @return void
 	 */
 	public function run(ProfileDTO $data):void {
-		$status = 'ok';
-
 		if (!$data->isValid()) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($this->status == 'ok') {
 			$user = new User();
 			if ($user->find(['id' => $data->getIdUser()])) {
 				$user_check = new User();
@@ -33,16 +33,16 @@ class UpdateProfileAction extends OAction {
 					$user_check->find(['email' => $data->getEmail()]) &&
 					$user->get('id') != $user_check->get('id')
 				) {
-					$status = 'error-email';
+					$this->status = 'error-email';
 				}
 				if (
-					$status == 'ok' &&
+					$this->status == 'ok' &&
 					$user_check->find(['name' => $data->getName()]) &&
 					$user->get('id') != $user_check->get('id')
 				) {
-					$status = 'error-name';
+					$this->status = 'error-name';
 				}
-				if ($status == 'ok') {
+				if ($this->status == 'ok') {
 					$user->set('name', $data->getName());
 					$user->set('email', $data->getEmail());
 					if (
@@ -56,10 +56,8 @@ class UpdateProfileAction extends OAction {
 				}
 			}
 			else {
-				$status = 'error';
+				$this->status = 'error';
 			}
 		}
-
-		$this->getTemplate()->add('status', $status);
 	}
 }

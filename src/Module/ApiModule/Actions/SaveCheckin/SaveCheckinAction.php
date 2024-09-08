@@ -15,6 +15,8 @@ use Osumi\OsumiFramework\App\Model\Photo;
 	services: ['Web']
 )]
 class SaveCheckinAction extends OAction {
+	public string $status = 'ok';
+
 	/**
 	 * Método para guardar un checkin
 	 *
@@ -22,13 +24,11 @@ class SaveCheckinAction extends OAction {
 	 * @return void
 	 */
 	public function run(CheckinDTO $data):void {
-		$status = 'ok';
-
 		if (!$data->isValid()) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($this->status == 'ok') {
 			$c = new Checkin();
 
 			$delete_previous_photo = null;
@@ -89,7 +89,5 @@ class SaveCheckinAction extends OAction {
 			$ct->set('last_used', $c->get('created_at', 'Y-m-d H:i:s'));
 			$ct->save();
 		}
-
-		$this->getTemplate()->add('status', $status);
 	}
 }

@@ -13,6 +13,8 @@ use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComp
 	filters: ['Login']
 )]
 class GetCheckinTypesAction extends OAction {
+	public string $status = 'ok';
+	public ?CheckinTypeListComponent $list = null;
 	/**
 	 * Método para obtener el listado de checkins de un usuario
 	 *
@@ -20,20 +22,16 @@ class GetCheckinTypesAction extends OAction {
 	 * @return void
 	 */
 	public function run(ORequest $req):void {
-		$status = 'ok';
 		$filter = $req->getFilter('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
-		$checkin_type_list_component = new CheckinTypeListComponent(['list' => []]);
+		$this->list = new CheckinTypeListComponent(['list' => []]);
 
 		if (is_null($id_user)) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
-			$checkin_type_list_component->setValue('list', $this->service['Web']->getUserCheckinTypes($id_user));
+		if ($this->status == 'ok') {
+			$this->list->setValue('list', $this->service['Web']->getUserCheckinTypes($id_user));
 		}
-
-		$this->getTemplate()->add('status', $status);
-		$this->getTemplate()->add('list',   $checkin_type_list_component);
 	}
 }

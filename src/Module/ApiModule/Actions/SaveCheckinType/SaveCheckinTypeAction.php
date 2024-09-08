@@ -12,6 +12,7 @@ use Osumi\OsumiFramework\App\Model\CheckinType;
 	filters: ['Login']
 )]
 class SaveCheckinTypeAction extends OAction {
+	public string $status = 'ok';
 	/**
 	 * Método para guardar un tipo de checkin
 	 *
@@ -19,13 +20,11 @@ class SaveCheckinTypeAction extends OAction {
 	 * @return void
 	 */
 	public function run(CheckintypeDTO $data):void {
-		$status = 'ok';
-
 		if (!$data->isValid()) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($this->status == 'ok') {
 			$ct = new CheckinType();
 
 			if (!is_null($data->getId())) {
@@ -44,7 +43,5 @@ class SaveCheckinTypeAction extends OAction {
 
 			$ct->save();
 		}
-
-		$this->getTemplate()->add('status', $status);
 	}
 }

@@ -13,6 +13,8 @@ use Osumi\OsumiFramework\App\Model\CheckinType;
 	filters: ['Login']
 )]
 class DeleteCheckinTypeAction extends OAction {
+	public string $status = 'ok';
+
 	/**
 	 * Método para borrar un tipo de checkin y todos sus checkins asociados
 	 *
@@ -20,30 +22,27 @@ class DeleteCheckinTypeAction extends OAction {
 	 * @return void
 	 */
 	public function run(ORequest $req):void {
-		$status = 'ok';
 		$id = $req->getParamInt('id');
 		$filter = $req->getFilter('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
 
 		if (is_null($id) || is_null($id_user)) {
-			$status = 'error';
+			$this->status = 'error';
 		}
 
-		if ($status == 'ok') {
+		if ($this->status == 'ok') {
 			$ct = new CheckinType();
 			if ($ct->find(['id' => $id])) {
 				if ($ct->get('id_user') == $id_user) {
 					$this->service['Web']->deleteCheckinType($ct);
 				}
 				else {
-					$status = 'error';
+					$this->status = 'error';
 				}
 			}
 			else {
-				$status = 'error';
+				$this->status = 'error';
 			}
 		}
-
-		$this->getTemplate()->add('status', $status);
 	}
 }
