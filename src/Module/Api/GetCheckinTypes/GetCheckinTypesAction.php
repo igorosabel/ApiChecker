@@ -1,17 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\GetCheckinTypes;
+namespace Osumi\OsumiFramework\App\Module\Api\GetCheckinTypes;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComponent;
 
-#[OModuleAction(
-	url: '/get-checkin-types',
-	services:	['Web'],
-	filters: ['Login']
-)]
 class GetCheckinTypesAction extends OAction {
 	public string $status = 'ok';
 	public ?CheckinTypeListComponent $list = null;

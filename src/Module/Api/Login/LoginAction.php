@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\Login;
+namespace Osumi\OsumiFramework\App\Module\Api\Login;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\Plugins\OToken;
@@ -10,10 +9,6 @@ use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Component\Model\User\UserComponent;
 use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComponent;
 
-#[OModuleAction(
-	url: '/login',
-	services:	['Web']
-)]
 class LoginAction extends OAction {
 	public string $status = 'ok';
 	public ?UserComponent $user = null;

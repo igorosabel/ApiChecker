@@ -1,21 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\DeleteCheckin;
+namespace Osumi\OsumiFramework\App\Module\Api\DeleteCheckinType;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
-use Osumi\OsumiFramework\App\Model\Checkin;
+use Osumi\OsumiFramework\App\Model\CheckinType;
 
-#[OModuleAction(
-	url: '/delete-checkin',
-	filters: ['Login']
-)]
-class DeleteCheckinAction extends OAction {
+class DeleteCheckinTypeAction extends OAction {
 	public string $status = 'ok';
 
 	/**
-	 * Método para borrar un checkin
+	 * Método para borrar un tipo de checkin y todos sus checkins asociados
 	 *
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
@@ -30,10 +25,10 @@ class DeleteCheckinAction extends OAction {
 		}
 
 		if ($this->status == 'ok') {
-			$c = new Checkin();
-			if ($c->find(['id' => $id])) {
-				if ($c->get('id_user') == $id_user) {
-					$c->deleteFull();
+			$ct = new CheckinType();
+			if ($ct->find(['id' => $id])) {
+				if ($ct->get('id_user') == $id_user) {
+					$this->service['Web']->deleteCheckinType($ct);
 				}
 				else {
 					$this->status = 'error';

@@ -1,16 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\SaveCheckinType;
+namespace Osumi\OsumiFramework\App\Module\Api\SaveCheckinType;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\App\DTO\CheckintypeDTO;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 
-#[OModuleAction(
-	url: '/save-checkin-type',
-	filters: ['Login']
-)]
 class SaveCheckinTypeAction extends OAction {
 	public string $status = 'ok';
 	/**

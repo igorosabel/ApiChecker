@@ -1,17 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\GetCheckins;
+namespace Osumi\OsumiFramework\App\Module\Api\GetCheckins;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\App\DTO\CheckinsDTO;
 use Osumi\OsumiFramework\App\Component\Model\CheckinList\CheckinListComponent;
 
-#[OModuleAction(
-	url: '/get-checkins',
-	services:	['Web'],
-	filters: ['Login']
-)]
 class GetCheckinsAction extends OAction {
 	public string $status = 'ok';
 	public string | float $pages  = 'null';
