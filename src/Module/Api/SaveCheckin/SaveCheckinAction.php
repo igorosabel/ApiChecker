@@ -7,9 +7,16 @@ use Osumi\OsumiFramework\App\DTO\CheckinDTO;
 use Osumi\OsumiFramework\App\Model\Checkin;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 use Osumi\OsumiFramework\App\Model\Photo;
+use Osumi\OsumiFramework\App\Service\WebService;
 
 class SaveCheckinAction extends OAction {
+	private ?WebService $ws = null;
+
 	public string $status = 'ok';
+
+	public function __construct() {
+		$this->ws = inject(WebService::class);
+	}
 
 	/**
 	 * Método para guardar un checkin
@@ -22,7 +29,7 @@ class SaveCheckinAction extends OAction {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
+		if ($this->status === 'ok') {
 			$c = new Checkin();
 
 			$delete_previous_photo = null;
@@ -67,7 +74,7 @@ class SaveCheckinAction extends OAction {
 				$p->save();
 				$data->setIdPhoto($p->get('id'));
 
-				$this->service['Web']->savePhoto($data->getPhoto(), $p->get('id'));
+				$this->ws->savePhoto($data->getPhoto(), $p->get('id'));
 			}
 
 			$c->set('message',      !is_null($data->getMessage()) ? urldecode($data->getMessage()) : null);
