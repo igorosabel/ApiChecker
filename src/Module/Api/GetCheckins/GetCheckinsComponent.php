@@ -2,12 +2,12 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\GetCheckins;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\CheckinsDTO;
 use Osumi\OsumiFramework\App\Service\WebService;
 use Osumi\OsumiFramework\App\Component\Model\CheckinList\CheckinListComponent;
 
-class GetCheckinsAction extends OAction {
+class GetCheckinsComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
@@ -16,8 +16,9 @@ class GetCheckinsAction extends OAction {
 	public ?CheckinListComponent $list = null;
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
-		$this->list = new CheckinListComponent(['list' => []]);
+		$this->list = new CheckinListComponent();
 	}
 
 	/**
@@ -32,7 +33,7 @@ class GetCheckinsAction extends OAction {
 		}
 
 		if ($this->status === 'ok') {
-			$this->list->setValue('list', $this->ws->getUserCheckins($data));
+			$this->list->list = $this->ws->getUserCheckins($data);
 			$stats = $this->ws->getUserCheckinsPages($data);
 			$this->pages = $stats['pages'];
 			$this->total = $stats['total'];

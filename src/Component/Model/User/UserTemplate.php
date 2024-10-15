@@ -1,10 +1,10 @@
-<?php if (is_null($values['User'])): ?>
+<?php if (is_null($user)): ?>
 null
 <?php else: ?>
 {
-	"id": <?php echo $values['User']->get('id') ?>,
-	"name": "<?php echo urlencode($values['User']->get('name')) ?>",
-	"email": "<?php echo urlencode($values['User']->get('email')) ?>",
-	"token": <?php echo is_null($values['User']->getToken()) ? 'null' : '"'.$values['User']->getToken().'"' ?>
+	"id": <?php echo $user->get('id') ?>,
+	"name": "<?php echo urlencode($user->get('name')) ?>",
+	"email": "<?php echo urlencode($user->get('email')) ?>",
+	"token": <?php echo is_null($user->getToken()) ? 'null' : '"'.$user->getToken().'"' ?>
 }
 <?php endif ?>

@@ -2,14 +2,14 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\Register;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Plugins\OToken;
 use Osumi\OsumiFramework\App\DTO\RegisterDTO;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Component\Model\User\UserComponent;
 use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComponent;
 
-class RegisterAction extends OAction {
+class RegisterComponent extends OComponent {
 	public string $status = 'ok';
 	public ?UserComponent $user = null;
 	public ?CheckinTypeListComponent $checkin_type_list = null;
@@ -21,8 +21,8 @@ class RegisterAction extends OAction {
 	 * @return void
 	 */
 	public function run(RegisterDTO $data):void {
-		$this->user = new UserComponent(['User' => null]);
-		$this->checkin_type_list = new CheckinTypeListComponent(['list' => []]);
+		$this->user = new UserComponent();
+		$this->checkin_type_list = new CheckinTypeListComponent();
 
 		if (!$data->isValid()) {
 			$this->status = 'error';
@@ -48,7 +48,7 @@ class RegisterAction extends OAction {
 				$tk->addParam('email', $u->get('email'));
 				$u->setToken($tk->getToken());
 
-				$this->user->setValue('User', $u);
+				$this->user->user = $u;
 			}
 		}
 	}

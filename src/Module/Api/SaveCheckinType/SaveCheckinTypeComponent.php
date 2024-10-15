@@ -2,11 +2,11 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\SaveCheckinType;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\CheckintypeDTO;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 
-class SaveCheckinTypeAction extends OAction {
+class SaveCheckinTypeComponent extends OComponent {
 	public string $status = 'ok';
 	/**
 	 * Método para guardar un tipo de checkin

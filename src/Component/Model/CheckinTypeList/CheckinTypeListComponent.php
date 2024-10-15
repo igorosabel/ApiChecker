@@ -4,4 +4,6 @@ namespace Osumi\OsumiFramework\App\Component\Model\CheckinTypeList;
 
 use Osumi\OsumiFramework\Core\OComponent;
 
-class CheckinTypeListComponent extends OComponent {}
+class CheckinTypeListComponent extends OComponent {
+  public array $list = [];
+}

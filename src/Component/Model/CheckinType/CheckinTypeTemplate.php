@@ -1,13 +1,13 @@
-<?php if (is_null($values['CheckinType'])): ?>
+<?php if (is_null($checkintype)): ?>
 null
 <?php else: ?>
 {
-	"id": <?php echo $values['CheckinType']->get('id') ?>,
-	"name": "<?php echo urlencode($values['CheckinType']->get('name')) ?>",
-	"icon": "<?php echo urlencode($values['CheckinType']->get('icon')) ?>",
-	"hasMessage": <?php echo $values['CheckinType']->get('has_message') ? 'true' : 'false' ?>,
-	"hasValue": <?php echo $values['CheckinType']->get('has_value') ? 'true' : 'false' ?>,
-	"num": <?php echo $values['CheckinType']->get('num') ?>,
-	"lastUsed": <?php echo is_null($values['CheckinType']->get('last_used')) ? 'null' : '"'.$values['CheckinType']->get('last_used', 'd/m/Y H:i').'"' ?>
+	"id": <?php echo $checkintype->get('id') ?>,
+	"name": "<?php echo urlencode($checkintype->get('name')) ?>",
+	"icon": "<?php echo urlencode($checkintype->get('icon')) ?>",
+	"hasMessage": <?php echo $checkintype->get('has_message') ? 'true' : 'false' ?>,
+	"hasValue": <?php echo $checkintype->get('has_value') ? 'true' : 'false' ?>,
+	"num": <?php echo $checkintype->get('num') ?>,
+	"lastUsed": <?php echo is_null($checkintype->get('last_used')) ? 'null' : '"'.$checkintype->get('last_used', 'd/m/Y H:i').'"' ?>
 }
 <?php endif ?>

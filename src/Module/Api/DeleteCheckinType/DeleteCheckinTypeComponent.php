@@ -2,11 +2,11 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\DeleteCheckinType;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 
-class DeleteCheckinTypeAction extends OAction {
+class DeleteCheckinTypeComponent extends OComponent {
 	public string $status = 'ok';
 
 	/**

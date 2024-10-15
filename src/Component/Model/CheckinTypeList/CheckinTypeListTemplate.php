@@ -1,10 +1,10 @@
 <?php
 use Osumi\OsumiFramework\App\Component\Model\CheckinType\CheckinTypeComponent;
 
-foreach ($values['list'] as $i => $CheckinType) {
-  $component = new CheckinTypeComponent([ 'CheckinType' => $CheckinType ]);
+foreach ($list as $i => $checkintype) {
+  $component = new CheckinTypeComponent([ 'checkintype' => $checkintype ]);
 	echo strval($component);
-	if ($i<count($values['list'])-1) {
+	if ($i < count($list) - 1) {
 		echo ",\n";
 	}
 }

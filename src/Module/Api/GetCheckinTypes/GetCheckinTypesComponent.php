@@ -2,20 +2,21 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\GetCheckinTypes;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Service\WebService;
 use Osumi\OsumiFramework\App\Component\Model\CheckinTypeList\CheckinTypeListComponent;
 
-class GetCheckinTypesAction extends OAction {
+class GetCheckinTypesComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
 	public ?CheckinTypeListComponent $list = null;
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
-		$this->list = new CheckinTypeListComponent(['list' => []]);
+		$this->list = new CheckinTypeListComponent();
 	}
 
 	/**
@@ -33,7 +34,7 @@ class GetCheckinTypesAction extends OAction {
 		}
 
 		if ($this->status === 'ok') {
-			$this->list->setValue('list', $this->ws->getUserCheckinTypes($id_user));
+			$this->list->list = $this->ws->getUserCheckinTypes($id_user);
 		}
 	}
 }

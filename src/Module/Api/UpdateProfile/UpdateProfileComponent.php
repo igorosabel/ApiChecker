@@ -3,7 +3,7 @@
 namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\UpdateProfile;
 
 use Osumi\OsumiFramework\Routing\OModuleAction;
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\ProfileDTO;
 use Osumi\OsumiFramework\App\Model\User;
 
@@ -11,7 +11,7 @@ use Osumi\OsumiFramework\App\Model\User;
 	url: '/update-profile',
 	filters: ['Login']
 )]
-class UpdateProfileAction extends OAction {
+class UpdateProfileComponent extends OComponent {
 	public string $status = 'ok';
 
 	/**

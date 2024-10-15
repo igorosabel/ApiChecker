@@ -2,19 +2,20 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\SaveCheckin;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\CheckinDTO;
 use Osumi\OsumiFramework\App\Model\Checkin;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 use Osumi\OsumiFramework\App\Model\Photo;
 use Osumi\OsumiFramework\App\Service\WebService;
 
-class SaveCheckinAction extends OAction {
+class SaveCheckinComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
 	}
 
