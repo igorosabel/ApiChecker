@@ -2,71 +2,48 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
 
 class User extends OModel {
-	function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id',
-				type: OMODEL_PK,
-				comment: 'Id único del usuario'
-			),
-			new OModelField(
-				name: 'name',
-				type: OMODEL_TEXT,
-				comment: 'Nombre del usuario',
-				nullable: false,
-        size: 50
-			),
-			new OModelField(
-				name: 'email',
-				type: OMODEL_TEXT,
-				comment: 'Email del usuario',
-				nullable: false,
-        size: 50
-			),
-      new OModelField(
-				name: 'pass',
-				type: OMODEL_TEXT,
-				comment: 'Contraseña encriptada del usuario',
-				nullable: false,
-        size: 50
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id único del usuario'
+	)]
+	public ?int $id;
 
-		parent::load($model);
-	}
+	#[OField(
+	  comment: 'Nombre del usuario',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $name;
 
-	/**
-	 * Función para comprobar un inicio de sesión. Primero busca el usuario por su nombre de usuario y luego comprueba su contraseña.
-	 *
-	 * @param string $name Nombre de usuario
-	 *
-	 * @param string $pass Contraseña a comprobar del usuario
-	 *
-	 * @return bool Devuelve si el inicio de sesión es correcto
-	 */
-	public function login(string $name, string $pass): bool {
-		if ($this->find(['name' => $name])) {
-			return $this->checkPass($pass);
-		}
-		else {
-			return false;
-		}
-	}
+	#[OField(
+	  comment: 'Email del usuario',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $email;
+
+	#[OField(
+	  comment: 'Contraseña encriptada del usuario',
+	  nullable: false,
+	  max: 100
+	)]
+	public ?string $pass;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
 
 	/**
 	 * Comprueba la contraseña del usuario actualmente cargado
@@ -76,9 +53,12 @@ class User extends OModel {
 	 * @return bool Devuelve si el inicio de sesión es correcto
 	 */
 	public function checkPass(string $pass): bool {
-		return password_verify($pass, $this->get('pass'));
+		return password_verify($pass, $this->pass);
 	}
 
+	/**
+	 * Token del usuario
+	 */
 	private string | null $token = null;
 
 	/**
@@ -97,7 +77,7 @@ class User extends OModel {
 	 *
 	 * @return void
 	 */
-	public function setToken(string $token):  void {
+	public function setToken(string $token): void {
 		$this->token = $token;
 	}
 }

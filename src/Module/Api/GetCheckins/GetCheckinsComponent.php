@@ -27,7 +27,7 @@ class GetCheckinsComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(CheckinsDTO $data):void {
+	public function run(CheckinsDTO $data): void {
 		if (!$data->isValid()) {
 			$this->status = 'error';
 		}

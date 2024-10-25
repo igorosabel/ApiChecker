@@ -2,81 +2,80 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
 use Osumi\OsumiFramework\App\Model\Photo;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 
 class Checkin extends OModel {
-	function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id',
-				type: OMODEL_PK,
-				comment: 'Id único del checkin'
-			),
-			new OModelField(
-				name: 'id_user',
-				type: OMODEL_NUM,
-				comment: 'Id del usuario',
-				nullable: false,
-				ref: 'user.id'
-			),
-			new OModelField(
-				name: 'id_type',
-				type: OMODEL_NUM,
-				comment: 'Id del tipo de checkin',
-				nullable: false,
-				ref: 'checkin_type.id'
-			),
-			new OModelField(
-				name: 'message',
-				type: OMODEL_LONGTEXT,
-				comment: 'Mensaje del checkin',
-				nullable: true
-			),
-			new OModelField(
-				name: 'value',
-				type: OMODEL_FLOAT,
-				comment: 'Valor del checkin',
-				nullable: true
-			),
-			new OModelField(
-				name: 'location_lat',
-				type: OMODEL_FLOAT,
-				comment: 'Latitud del checkin',
-				nullable: true
-			),
-			new OModelField(
-				name: 'location_lon',
-				type: OMODEL_FLOAT,
-				comment: 'Longitud del checkin',
-				nullable: true
-			),
-			new OModelField(
-				name: 'id_photo',
-				type: OMODEL_NUM,
-				comment: 'Id de la foto del checkin',
-				nullable: true,
-				default: null,
-				ref: 'photo.id'
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id único del checkin'
+	)]
+	public ?int $id;
 
-		parent::load($model);
-	}
+	#[OField(
+	  comment: 'Id del usuario',
+	  nullable: false,
+	  ref: 'user.id'
+	)]
+	public ?int $id_user;
 
+	#[OField(
+	  comment: 'Id del tipo de checkin',
+	  nullable: false,
+	  ref: 'checkin_type.id'
+	)]
+	public ?int $id_type;
+
+	#[OField(
+	  comment: 'Mensaje del checkin',
+	  nullable: true,
+	  type: OField::LONGTEXT
+	)]
+	public ?string $message;
+
+	#[OField(
+	  comment: 'Valor del checkin',
+	  nullable: true
+	)]
+	public ?float $value;
+
+	#[OField(
+	  comment: 'Latitud del checkin',
+	  nullable: true
+	)]
+	public ?string $location_lat;
+
+	#[OField(
+	  comment: 'Longitud del checkin',
+	  nullable: true
+	)]
+	public ?string $location_lon;
+
+	#[OField(
+	  comment: 'Id de la foto del checkin',
+	  nullable: true,
+	  ref: 'photo.id',
+	  default: null
+	)]
+	public ?int $id_photo;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
+
+	/**
+	 * Tipo de checkin
+	 */
 	private CheckinType | null $ct = null;
 
 	/**
@@ -108,8 +107,7 @@ class Checkin extends OModel {
 	 * @return void
 	 */
 	public function loadCheckinType(): void {
-		$ct = new CheckinType();
-		$ct->find(['id' => $this->get('id_type')]);
+		$ct = CheckinType::findOne(['id' => $this->id_type]);
 		$this->setCheckinType($ct);
 	}
 
@@ -119,9 +117,9 @@ class Checkin extends OModel {
 	 * @return void
 	 */
 	public function deleteFull(): void {
-		if (!is_null($this->get('id_photo'))) {
-			$p = new Photo();
-			if ($p->find(['id' => $this->get('id_photo')])) {
+		if (!is_null($this->id_photo)) {
+			$p = Photo::findOne(['id' => $this->id_photo]);
+			if (!is_null($p)) {
 				$p->deleteFull();
 			}
 		}

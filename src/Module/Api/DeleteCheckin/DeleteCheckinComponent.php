@@ -15,7 +15,7 @@ class DeleteCheckinComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		$id = $req->getParamInt('id');
 		$filter = $req->getFilter('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
@@ -24,10 +24,10 @@ class DeleteCheckinComponent extends OComponent {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
-			$c = new Checkin();
-			if ($c->find(['id' => $id])) {
-				if ($c->get('id_user') == $id_user) {
+		if ($this->status === 'ok') {
+			$c = Checkin::findOne(['id' => $id]);
+			if (!is_null($c)) {
+				if ($c->id_user === $id_user) {
 					$c->deleteFull();
 				}
 				else {

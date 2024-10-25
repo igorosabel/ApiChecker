@@ -25,7 +25,7 @@ class GetCheckinTypesComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		$filter = $req->getFilter('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
 

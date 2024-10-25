@@ -20,7 +20,7 @@ class RegisterComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(RegisterDTO $data):void {
+	public function run(RegisterDTO $data): void {
 		$this->user = new UserComponent();
 		$this->checkin_type_list = new CheckinTypeListComponent();
 
@@ -28,27 +28,30 @@ class RegisterComponent extends OComponent {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
-			$u = new User();
-			if ($u->find(['email' => $data->getEmail()])) {
+		if ($this->status === 'ok') {
+			$u = User::findOne(['email' => $data->getEmail()]);
+			if (!is_null($u)) {
 				$this->status = 'error-email';
 			}
-			if ($this->status == 'ok' && $u->find(['name' => $data->getName()])) {
-				$this->status = 'error-name';
-			}
-			if ($this->status == 'ok') {
-				$u->set('name', $data->getName());
-				$u->set('email', $data->getEmail());
-				$u->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
-				$u->save();
+			else {
+				$u = User::findOne(['name' => $data->getName()]);
+				if ($this->status === 'ok' && !is_null($u)) {
+					$this->status = 'error-name';
+				}
+				if ($this->status === 'ok') {
+					$u->name  = $data->getName();
+					$u->email = $data->getEmail();
+					$u->pass  = password_hash($data->getPass(), PASSWORD_BCRYPT);
+					$u->save();
 
-				$tk = new OToken($this->getConfig()->getExtra('secret'));
-				$tk->addParam('id', $u->get('id'));
-				$tk->addParam('name', $u->get('name'));
-				$tk->addParam('email', $u->get('email'));
-				$u->setToken($tk->getToken());
+					$tk = new OToken($this->getConfig()->getExtra('secret'));
+					$tk->addParam('id',    $u->id);
+					$tk->addParam('name',  $u->name);
+					$tk->addParam('email', $u->email);
+					$u->setToken($tk->getToken());
 
-				$this->user->user = $u;
+					$this->user->user = $u;
+				}
 			}
 		}
 	}

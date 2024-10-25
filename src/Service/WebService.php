@@ -3,17 +3,13 @@
 namespace Osumi\OsumiFramework\App\Service;
 
 use Osumi\OsumiFramework\Core\OService;
-use Osumi\OsumiFramework\DB\ODB;
+use Osumi\OsumiFramework\ORM\ODB;
 use Osumi\OsumiFramework\Plugins\OImage;
 use Osumi\OsumiFramework\App\DTO\CheckinsDTO;
 use Osumi\OsumiFramework\App\Model\CheckinType;
 use Osumi\OsumiFramework\App\Model\Checkin;
 
 class WebService extends OService {
-	function __construct() {
-		$this->loadService();
-	}
-
 	/**
 	 * Obtiene la lista de tipos de checkin de un usuario
 	 *
@@ -28,11 +24,10 @@ class WebService extends OService {
 		$ret = [];
 		$db->query($sql, [$id_user]);
 
-		while ($res=$db->next()) {
-			$ct = new CheckinType();
-			$ct->update($res);
+		while ($res = $db->next()) {
+			$ct = CheckinType::from($res);
 
-			array_push($ret, $ct);
+			$ret[] = $ct;
 		}
 
 		return $ret;
@@ -51,19 +46,20 @@ class WebService extends OService {
 		$sql = "SELECT * FROM `checkin` WHERE `id_user` = ?";
 		if (!is_null($data->getIdType())) {
 			$sql .= " AND `id_type` = ?";
-			array_push($params, $data->getIdType());
+			$params[] = $data->getIdType();
 		}
 		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
 			$sql .= " AND `created_at` > ?";
-			array_push($params, $data->getStart());
+			$params[] = $data->getStart();
 		}
 		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
 			$sql .= " AND `created_at` < ?";
-			array_push($params, $data->getEnd());
+			$params[] = $data->getEnd();
 		}
 		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
 			$sql .= " AND `created_at` BETWEEN ? AND ?";
-			array_push($params, $data->getStart(), $data->getEnd());
+			$params[] = $data->getStart();
+			$params[] = $data->getEnd();
 		}
 		$sql .= " ORDER BY `created_at` DESC";
 		$lim = ($data->getPage() -1) * $this->getConfig()->getExtra('num_per_page');
@@ -72,11 +68,10 @@ class WebService extends OService {
 		$ret = [];
 		$db->query($sql, $params);
 
-		while ($res=$db->next()) {
-			$c = new Checkin();
-			$c->update($res);
+		while ($res = $db->next()) {
+			$c = Checkin::from($res);
 
-			array_push($ret, $c);
+			$ret[] = $c;
 		}
 
 		return $ret;
@@ -95,19 +90,20 @@ class WebService extends OService {
 		$sql = "SELECT COUNT(*) AS `num` FROM `checkin` WHERE `id_user` = ?";
 		if (!is_null($data->getIdType())) {
 			$sql .= " AND `id_type` = ?";
-			array_push($params, $data->getIdType());
+			$params[] = $data->getIdType();
 		}
 		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
 			$sql .= " AND `created_at` > ?";
-			array_push($params, $data->getStart());
+			$params[] = $data->getStart();
 		}
 		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
 			$sql .= " AND `created_at` < ?";
-			array_push($params, $data->getEnd());
+			$params[] = $data->getEnd();
 		}
 		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
 			$sql .= " AND `created_at` BETWEEN ? AND ?";
-			array_push($params, $data->getStart(), $data->getEnd());
+			$params[] = $data->getStart();
+			$params[] = $data->getEnd();
 		}
 
 		$db->query($sql, $params);
@@ -165,7 +161,7 @@ class WebService extends OService {
 	 * @return string Devuelve la ruta completa a la nueva imagen
 	 */
 	public function saveImage(string $dir, string $base64_string, int $id, string $ext): string {
-		$ruta = $dir.$id.'.'.$ext;
+		$ruta = $dir . $id . '.' . $ext;
 
 		if (file_exists($ruta)) {
 			unlink($ruta);
@@ -201,7 +197,7 @@ class WebService extends OService {
 		}
 
 		// Guardo la imagen ya modificada como WebP
-		$im->save($this->getConfig()->getExtra('photos').$id.'.webp', IMAGETYPE_WEBP);
+		$im->save($this->getConfig()->getExtra('photos') . $id . '.webp', IMAGETYPE_WEBP);
 
 		// Borro la imagen temporal
 		unlink($ruta);

@@ -7,10 +7,6 @@ use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\ProfileDTO;
 use Osumi\OsumiFramework\App\Model\User;
 
-#[OModuleAction(
-	url: '/update-profile',
-	filters: ['Login']
-)]
 class UpdateProfileComponent extends OComponent {
 	public string $status = 'ok';
 
@@ -20,37 +16,40 @@ class UpdateProfileComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ProfileDTO $data):void {
+	public function run(ProfileDTO $data): void {
 		if (!$data->isValid()) {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
-			$user = new User();
-			if ($user->find(['id' => $data->getIdUser()])) {
-				$user_check = new User();
+		if ($this->status === 'ok') {
+			$user = User::findOne(['id' => $data->getIdUser()]);
+			if (!is_null($user)) {
+				$user_check = User::findOne(['email' => $data->getEmail()]);
 				if (
-					$user_check->find(['email' => $data->getEmail()]) &&
-					$user->get('id') != $user_check->get('id')
+					!is_null($user_check) &&
+					$user->id !== $user_check->id
 				) {
 					$this->status = 'error-email';
 				}
+
+				$user_check = User::findOne(['name' => $data->getName()]);
 				if (
-					$this->status == 'ok' &&
-					$user_check->find(['name' => $data->getName()]) &&
-					$user->get('id') != $user_check->get('id')
+					$this->status === 'ok' &&
+					!is_null($user_check) &&
+					$user->id !== $user_check->id
 				) {
 					$this->status = 'error-name';
 				}
-				if ($this->status == 'ok') {
-					$user->set('name', $data->getName());
-					$user->set('email', $data->getEmail());
+
+				if ($this->status === 'ok') {
+					$user->name  = $data->getName();
+					$user->email = $data->getEmail();
 					if (
 						$data->getPass() !== null &&
 						$data->getConf() !== null &&
-						$data->getPass() == $data->getConf()
+						$data->getPass() === $data->getConf()
 					) {
-						$user->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
+						$user->pass = password_hash($data->getPass(), PASSWORD_BCRYPT);
 					}
 					$user->save();
 				}

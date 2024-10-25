@@ -2,82 +2,78 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
-use Osumi\OsumiFramework\OFW\DB\ODB;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
+use Osumi\OsumiFramework\ORM\ODB;
 use Osumi\OsumiFramework\App\Model\Checkin;
 
 class CheckinType extends OModel {
-	function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id',
-				type: OMODEL_PK,
-				comment: 'Id único del tipo de checkin'
-			),
-			new OModelField(
-				name: 'id_user',
-				type: OMODEL_NUM,
-				comment: 'Id del usuario',
-				nullable: false,
-				ref: 'user.id'
-			),
-			new OModelField(
-				name: 'name',
-				type: OMODEL_TEXT,
-				comment: 'Nombre del tipo de checkin',
-				nullable: false,
-        size: 50
-			),
-			new OModelField(
-				name: 'icon',
-				type: OMODEL_TEXT,
-				comment: 'Icono del tipo de checkin',
-				nullable: false,
-        size: 50
-			),
-			new OModelField(
-				name: 'has_message',
-				type: OMODEL_BOOL,
-				comment: 'Indica si el checkin debe tener mensaje 1 o no 0',
-				nullable: false,
-				default: false
-			),
-			new OModelField(
-				name: 'has_value',
-				type: OMODEL_BOOL,
-				comment: 'Indica si el checkin debe tener valor 1 o no 0',
-				nullable: false,
-				default: false
-			),
-			new OModelField(
-				name: 'num',
-				type: OMODEL_NUM,
-				comment: 'Número de veces que se ha usado',
-				nullable: false
-			),
-			new OModelField(
-				name: 'last_used',
-				type: OMODEL_DATE,
-				comment: 'Última vez que se ha usado el tipo de checkin',
-				nullable: true,
-				default: null
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id único del tipo de checkin'
+	)]
+	public ?int $id;
 
-		parent::load($model);
-	}
+	#[OField(
+	  comment: 'Id del usuario',
+	  nullable: false,
+	  ref: 'user.id'
+	)]
+	public ?int $id_user;
+
+	#[OField(
+	  comment: 'Nombre del tipo de checkin',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $name;
+
+	#[OField(
+	  comment: 'Icono del tipo de checkin',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $icon;
+
+	#[OField(
+	  comment: 'Indica si el checkin debe tener mensaje 1 o no 0',
+	  nullable: false,
+	  default: false
+	)]
+	public ?bool $has_message;
+
+	#[OField(
+	  comment: 'Indica si el checkin debe tener valor 1 o no 0',
+	  nullable: false,
+	  default: false
+	)]
+	public ?bool $has_value;
+
+	#[OField(
+	  comment: 'Número de veces que se ha usado',
+	  nullable: false
+	)]
+	public ?int $num;
+
+	#[OField(
+	  comment: 'Última vez que se ha usado el tipo de checkin',
+	  nullable: true,
+	  default: null,
+	  type: OField::DATE
+	)]
+	public ?string $last_used;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
 
 	/**
 	 * Listado de checkins de un tipo
@@ -117,13 +113,12 @@ class CheckinType extends OModel {
 		$sql = "SELECT * FROM `checkin` WHERE `id_type` = ? ORDER BY `created_at` DESC";
 
 		$list = [];
-		$db->query($sql, [$this->get('id')]);
+		$db->query($sql, [$this->id]);
 
-		while ($res=$db->next()) {
-			$c = new Checkin();
-			$c->update($res);
+		while ($res = $db->next()) {
+			$c = Checkin::from($res);
 
-			array_push($list, $c);
+			$list[] = $c;
 		}
 
 		$this->setCheckins($list);
