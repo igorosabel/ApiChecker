@@ -18,19 +18,7 @@ class WebService extends OService {
 	 * @return array Lista de tipos de checkin
 	 */
 	public function getUserCheckinTypes(int $id_user): array {
-		$db = new ODB();
-		$sql = "SELECT * FROM `checkin_type` WHERE `id_user` = ? ORDER BY `num` DESC";
-
-		$ret = [];
-		$db->query($sql, [$id_user]);
-
-		while ($res = $db->next()) {
-			$ct = CheckinType::from($res);
-
-			$ret[] = $ct;
-		}
-
-		return $ret;
+		return CheckinType::where(['id_user' => $id_user], ['order_by' => 'num#desc']);
 	}
 
 	/**
