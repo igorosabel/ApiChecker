@@ -22,9 +22,9 @@ class UpdateProfileComponent extends OComponent {
 		}
 
 		if ($this->status === 'ok') {
-			$user = User::findOne(['id' => $data->getIdUser()]);
+			$user = User::findOne(['id' => $data->id_user]);
 			if (!is_null($user)) {
-				$user_check = User::findOne(['email' => $data->getEmail()]);
+				$user_check = User::findOne(['email' => $data->email]);
 				if (
 					!is_null($user_check) &&
 					$user->id !== $user_check->id
@@ -32,7 +32,7 @@ class UpdateProfileComponent extends OComponent {
 					$this->status = 'error-email';
 				}
 
-				$user_check = User::findOne(['name' => $data->getName()]);
+				$user_check = User::findOne(['name' => $data->name]);
 				if (
 					$this->status === 'ok' &&
 					!is_null($user_check) &&
@@ -42,14 +42,14 @@ class UpdateProfileComponent extends OComponent {
 				}
 
 				if ($this->status === 'ok') {
-					$user->name  = $data->getName();
-					$user->email = $data->getEmail();
+					$user->name  = $data->name;
+					$user->email = $data->email;
 					if (
-						$data->getPass() !== null &&
-						$data->getConf() !== null &&
-						$data->getPass() === $data->getConf()
+						$data->pass !== null &&
+						$data->conf !== null &&
+						$data->pass === $data->conf
 					) {
-						$user->pass = password_hash($data->getPass(), PASSWORD_BCRYPT);
+						$user->pass = password_hash($data->pass, PASSWORD_BCRYPT);
 					}
 					$user->save();
 				}

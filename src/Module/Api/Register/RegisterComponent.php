@@ -29,19 +29,19 @@ class RegisterComponent extends OComponent {
 		}
 
 		if ($this->status === 'ok') {
-			$u = User::findOne(['email' => $data->getEmail()]);
+			$u = User::findOne(['email' => $data->email]);
 			if (!is_null($u)) {
 				$this->status = 'error-email';
 			}
 			else {
-				$u = User::findOne(['name' => $data->getName()]);
+				$u = User::findOne(['name' => $data->name]);
 				if ($this->status === 'ok' && !is_null($u)) {
 					$this->status = 'error-name';
 				}
 				if ($this->status === 'ok') {
-					$u->name  = $data->getName();
-					$u->email = $data->getEmail();
-					$u->pass  = password_hash($data->getPass(), PASSWORD_BCRYPT);
+					$u->name  = $data->name;
+					$u->email = $data->email;
+					$u->pass  = password_hash($data->pass, PASSWORD_BCRYPT);
 					$u->save();
 
 					$tk = new OToken($this->getConfig()->getExtra('secret'));

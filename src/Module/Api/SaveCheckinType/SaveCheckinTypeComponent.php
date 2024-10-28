@@ -20,20 +20,20 @@ class SaveCheckinTypeComponent extends OComponent {
 		}
 
 		if ($this->status === 'ok') {
-			if (!is_null($data->getId())) {
-				$ct = CheckinType::findOne(['id' => $data->getId()]);
+			if (!is_null($data->id)) {
+				$ct = CheckinType::findOne(['id' => $data->id]);
 			}
 			else {
 				$ct = CheckinType::create();
-				$ct->id_user   = $data->getIdUser();
+				$ct->id_user   = $data->id_user;
 				$ct->num       = 0;
 				$ct->last_used = null;
 			}
 
-			$ct->name        = urldecode($data->getName());
-			$ct->icon        = urldecode($data->getIcon());
-			$ct->has_message = $data->getHasMessage();
-			$ct->has_value   = $data->getHasValue();
+			$ct->name        = urldecode($data->name);
+			$ct->icon        = urldecode($data->icon);
+			$ct->has_message = $data->has_message;
+			$ct->has_value   = $data->has_value;
 
 			$ct->save();
 		}

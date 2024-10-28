@@ -36,29 +36,29 @@ class SaveCheckinComponent extends OComponent {
 			$delete_previous_photo = null;
 			$load_new_photo = false;
 
-			if (!is_null($data->getId())) {
-				$c = Checkin::findOne(['id' => $data->getId()]);
+			if (!is_null($data->id)) {
+				$c = Checkin::findOne(['id' => $data->id]);
 
 				// No llega foto, no llega photo id y ya tenia (id_photo !== null) => borrar anterior
-				if (is_null($data->getPhoto()) && is_null($data->getIdPhoto()) && !is_null($c->id_photo)) {
+				if (is_null($data->photo) && is_null($data->id_photo) && !is_null($c->id_photo)) {
 					$delete_previous_photo = $c->id_photo;
 				}
 				// Llega foto (photo) y no tenia (id_photo == null) => cargar nueva
-				if (!is_null($data->getPhoto()) && is_null($c->id_photo)) {
+				if (!is_null($data->photo) && is_null($c->id_photo)) {
 					$load_new_photo = true;
 				}
 				// Llega foto (photo) y ya tenia (id_photo != null) => borrar anterior y cargar nueva
-				if (!is_null($data->getPhoto()) && !is_null($c->id_photo)) {
+				if (!is_null($data->photo) && !is_null($c->id_photo)) {
 					$delete_previous_photo = $c->id_photo;
 					$load_new_photo = true;
 				}
 			}
 			else {
-				$c->id_user = $data->getIdUser();
-				$c->id_type = $data->getIdType();
+				$c->id_user = $data->id_user;
+				$c->id_type = $data->id_type;
 
 				// Llega foto (photo) => cargar nueva
-				if (!is_null($data->getPhoto())) {
+				if (!is_null($data->photo)) {
 					$load_new_photo = true;
 				}
 			}
@@ -66,22 +66,22 @@ class SaveCheckinComponent extends OComponent {
 			if (!is_null($delete_previous_photo)) {
 				$p = Photo::findOne(['id' => $delete_previous_photo]);
 				$p->deleteFull();
-				$data->setIdPhoto(null);
+				$data->id_photo = null;
 			}
 			if ($load_new_photo) {
 				$p = Photo::create();
-				$p->id_user = $data->getIdUser();
+				$p->id_user = $data->id_user;
 				$p->save();
-				$data->setIdPhoto($p->id);
+				$data->id_photo = $p->id;
 
-				$this->ws->savePhoto($data->getPhoto(), $p->id);
+				$this->ws->savePhoto($data->photo, $p->id);
 			}
 
-			$c->message      = !is_null($data->getMessage()) ? urldecode($data->getMessage()) : null;
-			$c->value        = $data->getValue();
-			$c->location_lat = $data->getLocationLat();
-			$c->location_lon = $data->getLocationLon();
-			$c->id_photo     = $data->getIdPhoto();
+			$c->message      = !is_null($data->message) ? urldecode($data->message) : null;
+			$c->value        = $data->value;
+			$c->location_lat = $data->location_lat;
+			$c->location_lon = $data->location_lon;
+			$c->id_photo     = $data->id_photo;
 
 			$c->save();
 

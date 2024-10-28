@@ -30,27 +30,27 @@ class WebService extends OService {
 	 */
 	public function getUserCheckins(CheckinsDTO $data): array {
 		$db = new ODB();
-		$params = [$data->getIdUser()];
+		$params = [$data->id_user];
 		$sql = "SELECT * FROM `checkin` WHERE `id_user` = ?";
-		if (!is_null($data->getIdType())) {
+		if (!is_null($data->id_type)) {
 			$sql .= " AND `id_type` = ?";
-			$params[] = $data->getIdType();
+			$params[] = $data->id_type;
 		}
-		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
+		if (!is_null($data->start) && is_null($data->end)) {
 			$sql .= " AND `created_at` > ?";
-			$params[] = $data->getStart();
+			$params[] = $data->start;
 		}
-		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
+		if (is_null($data->start) && !is_null($data->end)) {
 			$sql .= " AND `created_at` < ?";
-			$params[] = $data->getEnd();
+			$params[] = $data->end;
 		}
-		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
+		if (!is_null($data->start) && !is_null($data->end)) {
 			$sql .= " AND `created_at` BETWEEN ? AND ?";
-			$params[] = $data->getStart();
-			$params[] = $data->getEnd();
+			$params[] = $data->start;
+			$params[] = $data->end;
 		}
 		$sql .= " ORDER BY `created_at` DESC";
-		$lim = ($data->getPage() -1) * $this->getConfig()->getExtra('num_per_page');
+		$lim = ($data->page -1) * $this->getConfig()->getExtra('num_per_page');
 		$sql .= " LIMIT ".$lim.",".$this->getConfig()->getExtra('num_per_page');
 
 		$ret = [];
@@ -74,24 +74,24 @@ class WebService extends OService {
 	 */
 	public function getUserCheckinsPages(CheckinsDTO $data): array {
 		$db = new ODB();
-		$params = [$data->getIdUser()];
+		$params = [$data->id_user];
 		$sql = "SELECT COUNT(*) AS `num` FROM `checkin` WHERE `id_user` = ?";
-		if (!is_null($data->getIdType())) {
+		if (!is_null($data->id_type)) {
 			$sql .= " AND `id_type` = ?";
-			$params[] = $data->getIdType();
+			$params[] = $data->id_type;
 		}
-		if (!is_null($data->getStart()) && is_null($data->getEnd())) {
+		if (!is_null($data->start) && is_null($data->end)) {
 			$sql .= " AND `created_at` > ?";
-			$params[] = $data->getStart();
+			$params[] = $data->start;
 		}
-		if (is_null($data->getStart()) && !is_null($data->getEnd())) {
+		if (is_null($data->start) && !is_null($data->end)) {
 			$sql .= " AND `created_at` < ?";
-			$params[] = $data->getEnd();
+			$params[] = $data->end;
 		}
-		if (!is_null($data->getStart()) && !is_null($data->getEnd())) {
+		if (!is_null($data->start) && !is_null($data->end)) {
 			$sql .= " AND `created_at` BETWEEN ? AND ?";
-			$params[] = $data->getStart();
-			$params[] = $data->getEnd();
+			$params[] = $data->start;
+			$params[] = $data->end;
 		}
 
 		$db->query($sql, $params);

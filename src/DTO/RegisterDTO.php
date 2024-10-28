@@ -6,50 +6,25 @@ use Osumi\OsumiFramework\Core\ODTO;
 use Osumi\OsumiFramework\Web\ORequest;
 
 class RegisterDTO implements ODTO{
-	private ?string $name  = null;
-	private ?string $email = null;
-	private ?string $pass  = null;
-  private ?string $conf  = null;
-
-	private function setName(?string $name) {
-		$this->name = $name;
-	}
-	public function getName(): ?string {
-		return $this->name;
-	}
-	private function setEmail(?string $email) {
-		$this->email = $email;
-	}
-	public function getEmail(): ?string {
-		return $this->email;
-	}
-	private function setPass(?string $pass) {
-		$this->pass = $pass;
-	}
-	public function getPass(): ?string {
-		return $this->pass;
-	}
-	private function setConf(?string $conf) {
-		$this->conf = $conf;
-	}
-	public function getConf(): ?string {
-		return $this->conf;
-	}
+	public ?string $name  = null;
+	public ?string $email = null;
+	public ?string $pass  = null;
+  public ?string $conf  = null;
 
 	public function isValid(): bool {
 		return (
-			!is_null($this->getName()) &&
-      !is_null($this->getEmail()) &&
-      !is_null($this->getPass()) &&
-      !is_null($this->getConf()) &&
-      ($this->getPass() === $this->getConf())
+			!is_null($this->name) &&
+      !is_null($this->email) &&
+      !is_null($this->pass) &&
+      !is_null($this->conf) &&
+      ($this->pass === $this->conf)
 		);
 	}
 
 	public function load(ORequest $req): void {
-		$this->setName($req->getParamString('name'));
-		$this->setEmail($req->getParamString('email'));
-		$this->setPass($req->getParamString('pass'));
-		$this->setConf($req->getParamString('conf'));
+		$this->name  = $req->getParamString('name');
+		$this->email = $req->getParamString('email');
+		$this->pass  = $req->getParamString('pass');
+		$this->conf  = $req->getParamString('conf');
 	}
 }
