@@ -25,7 +25,7 @@ class DeleteCheckinTypeComponent extends OComponent {
 	 */
 	public function run(ORequest $req): void {
 		$id = $req->getParamInt('id');
-		$filter = $req->getFilter('Login');
+		$filter = $req->getMiddleware('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
 
 		if (is_null($id) || is_null($id_user)) {

@@ -61,7 +61,7 @@ class CheckinType extends OModel {
 	  comment: 'Última vez que se ha usado el tipo de checkin',
 	  nullable: true,
 	  default: null,
-	  type: OField::DATE
+	  type: OField::DATETIME
 	)]
 	public ?string $last_used;
 

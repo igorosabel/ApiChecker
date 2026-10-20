@@ -2,30 +2,26 @@
 
 namespace Osumi\OsumiFramework\App\DTO;
 
-use Osumi\OsumiFramework\Core\ODTO;
-use Osumi\OsumiFramework\Web\ORequest;
+use Osumi\OsumiFramework\DTO\ODTO;
+use Osumi\OsumiFramework\DTO\ODTOField;
 
-class CheckinsDTO implements ODTO{
-	public ?int $id_type  = null;
+class CheckinsDTO extends ODTO{
+	#[ODTOField]
+	public ?int $id_type = null;
+
+	#[ODTOField]
 	public ?string $start = null;
-	public ?string $end   = null;
-	public ?int $page     = null;
-  public ?int $id_user  = null;
 
-	public function isValid(): bool {
-		return (
-			!is_null($this->page) &&
-			!is_null($this->id_user)
-		);
-	}
+	#[ODTOField]
+	public ?string $end = null;
 
-	public function load(ORequest $req): void {
-    $filter = $req->getFilter('Login');
+	#[ODTOField(required: true)]
+	public ?int $page = null;
 
-		$this->id_type = $req->getParamInt('idType');
-		$this->start   = $req->getParamString('start');
-		$this->end     = $req->getParamString('end');
-		$this->page    = $req->getParamInt('page');
-    $this->id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
-	}
+	#[ODTOField(
+			required: true,
+			middleware: 'Login',
+			middlewareProperty: 'id'
+	)]
+  public ?int $id_user = null;
 }

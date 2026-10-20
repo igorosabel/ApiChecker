@@ -2,29 +2,19 @@
 
 namespace Osumi\OsumiFramework\App\DTO;
 
-use Osumi\OsumiFramework\Core\ODTO;
-use Osumi\OsumiFramework\Web\ORequest;
+use Osumi\OsumiFramework\DTO\ODTO;
+use Osumi\OsumiFramework\DTO\ODTOField;
 
-class RegisterDTO implements ODTO{
+class RegisterDTO extends ODTO{
+	#[ODTOField(required: true)]
 	public ?string $name  = null;
+
+	#[ODTOField(required: true)]
 	public ?string $email = null;
+
+	#[ODTOField(required: true)]
 	public ?string $pass  = null;
+
+	#[ODTOField(required: true)]
   public ?string $conf  = null;
-
-	public function isValid(): bool {
-		return (
-			!is_null($this->name) &&
-      !is_null($this->email) &&
-      !is_null($this->pass) &&
-      !is_null($this->conf) &&
-      ($this->pass === $this->conf)
-		);
-	}
-
-	public function load(ORequest $req): void {
-		$this->name  = $req->getParamString('name');
-		$this->email = $req->getParamString('email');
-		$this->pass  = $req->getParamString('pass');
-		$this->conf  = $req->getParamString('conf');
-	}
 }

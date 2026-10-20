@@ -2,38 +2,38 @@
 
 namespace Osumi\OsumiFramework\App\DTO;
 
-use Osumi\OsumiFramework\Core\ODTO;
-use Osumi\OsumiFramework\Web\ORequest;
+use Osumi\OsumiFramework\DTO\ODTO;
+use Osumi\OsumiFramework\DTO\ODTOField;
 
-class CheckinDTO implements ODTO{
-	public ?int $id             = null;
-  public ?int $id_type        = null;
-	public ?string $message     = null;
-	public ?float $value        = null;
+class CheckinDTO extends ODTO {
+	#[ODTOField]
+	public ?int $id = null;
+
+	#[ODTOField(required: true)]
+	public ?int $id_type = null;
+
+	#[ODTOField]
+	public ?string $message = null;
+
+	#[ODTOField]
+	public ?float $value = null;
+
+	#[ODTOField]
   public ?float $location_lat = null;
+
+	#[ODTOField]
   public ?float $location_lon = null;
-  public ?int $id_photo       = null;
-  public ?string $photo       = null;
-	public ?int $id_user        = null;
 
-	public function isValid(): bool {
-		return (
-			!is_null($this->id_type) &&
-			!is_null($this->id_user)
-		);
-	}
+	#[ODTOField]
+  public ?int $id_photo = null;
 
-	public function load(ORequest $req): void {
-    $filter = $req->getFilter('Login');
+	#[ODTOField]
+  public ?string $photo = null;
 
-		$this->id           = $req->getParamInt('id');
-    $this->id_type      = $req->getParamInt('idType');
-		$this->message      = $req->getParamString('message');
-		$this->value        = $req->getParamFloat('value');
-    $this->location_lat = $req->getParamFloat('locationLat');
-    $this->location_lon = $req->getParamFloat('locationLon');
-    $this->id_photo     = $req->getParamInt('idPhoto');
-    $this->photo        = $req->getParamString('photo');
-    $this->id_user      = array_key_exists('id', $filter) ? $filter['id'] : null;
-	}
+	#[ODTOField(
+			required: true,
+			middleware: 'Login',
+			middlewareProperty: 'id'
+	)]
+	public ?int $id_user = null;
 }

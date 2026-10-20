@@ -26,7 +26,7 @@ class GetCheckinTypesComponent extends OComponent {
 	 * @return void
 	 */
 	public function run(ORequest $req): void {
-		$filter = $req->getFilter('Login');
+		$filter = $req->getMiddleware('Login');
 		$id_user = array_key_exists('id', $filter) ? $filter['id'] : null;
 
 		if (is_null($id_user)) {
